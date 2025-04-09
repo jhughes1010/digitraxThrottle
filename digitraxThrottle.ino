@@ -4,6 +4,8 @@
 //#include <BasicTerm.h>
 #include <ctype.h>
 #include <EEPROM.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 // EEPROM storage locations for State
 #define EE_LAST_TH_STATE 0  // EEPROM Offset of  8-Bit Throttle State
@@ -12,8 +14,12 @@
 #define EE_LAST_TH_IDX 4    // EEPROM Offset of 16-Bit Throttle IDX (Should be Unique Throttle ID)
 
 #define DEFAULT_THROTTLE_IDX 0x3FF0
-
 #define RECALL_BUFFER_SIZE 8
+
+#define SCREEN_WIDTH 128     // OLED display width, in pixels
+#define SCREEN_HEIGHT 64     // OLED display height, in pixels
+#define OLED_RESET -1        // Reset pin # (or -1 if sharing Arduino reset pin)
+#define SCREEN_ADDRESS 0x3D  ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 
 typedef struct
 {
@@ -32,6 +38,14 @@ uint8_t recallIndex;
 LocoNetThrottleClass Throttle;
 lnMsg *RxPacket;
 uint32_t LastThrottleTimerTick;
+
+//OLED
+
+
+
+
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 /*
 BasicTerm Term(&Serial);
 
@@ -210,6 +224,11 @@ void setup() {
 
   // Configure the serial port for 57600 baud
   Serial.begin(115200);
+  display.display();
+  delay(2000);  // Pause for 2 seconds
+
+  // Clear the buffer
+  display.clearDisplay();
   //Term.init();
 
   // Uncomment to force Reset of EEPROM Values
